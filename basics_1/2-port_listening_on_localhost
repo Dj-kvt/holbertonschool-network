@@ -1,4 +1,4 @@
 #!/bin/bash
 # Script to listen on localhost:98 and print received messages
 
-nc -l -s 127.0.0.2 -p 98
+sudo nc -l -s 127.0.0.2 -p 98
