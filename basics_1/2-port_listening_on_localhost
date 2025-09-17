@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# Script to listen on localhost:98 and print received messages
+
+# Use netcat (nc) to listen on 127.0.0.1 port 98
+# -l: listen mode
+# -p 98: port 98
+# -s 127.0.0.1: bind to localhost only
+nc -l -s 127.0.0.1 -p 98
