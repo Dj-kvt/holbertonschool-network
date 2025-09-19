@@ -1,16 +1,27 @@
 #!/usr/bin/env bash
-# This script changes localhost to resolve to 127.0.0.2 and facebook.com to resolve to 8.8.8.8
+# Script that changes localhost and facebook.com IP resolution in /etc/hosts
 
-# Exit on error
-set -e
+# Vérifie si l'utilisateur est root
+if [ "$EUID" -ne 0 ]; then
+  echo "Please run as root"
+  exit 1
+fi
 
-# Sauvegarde du fichier /etc/hosts si ce n'est pas déjà fait
-[ ! -f /etc/hosts.bak ] && sudo cp /etc/hosts /etc/hosts.bak
+# Sauvegarde du fichier original
+cp /etc/hosts /etc/hosts.bak
 
-# Supprimer les anciennes lignes correspondantes
-sudo sed -i '/[[:space:]]localhost$/d' /etc/hosts
-sudo sed -i '/facebook\.com/d' /etc/hosts
+# Crée un nouveau fichier temporaire
+temp_hosts=$(mktemp)
 
-# Ajouter les nouvelles correspondances IP
-echo "127.0.0.2 localhost" | sudo tee -a /etc/hosts > /dev/null
-echo "8.8.8.8 facebook.com" | sudo tee -a /etc/hosts > /dev/null
+# Copie uniquement les lignes qui ne contiennent pas localhost ou facebook.com
+grep -v -E 'localhost|facebook\.com' /etc/hosts > "$temp_hosts"
+
+# Ajoute les nouvelles résolutions
+echo "127.0.0.2 localhost" >> "$temp_hosts"
+echo "8.8.8.8 facebook.com" >> "$temp_hosts"
+
+# Remplace le fichier /etc/hosts
+cp "$temp_hosts" /etc/hosts
+
+# Nettoyage
+rm "$temp_hosts"
