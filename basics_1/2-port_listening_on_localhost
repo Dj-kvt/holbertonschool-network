@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Script to listen on localhost:98 and print received messages
 
 sudo nc -l -s 127.0.0.2 -p 98
